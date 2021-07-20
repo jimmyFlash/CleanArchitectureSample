@@ -33,7 +33,7 @@ package com.jimmy.cleanarchitecture.presentation.library
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.framework.Interactors
 import com.jimmy.cleanarchitecture.framework.MajesticViewModel
 

@@ -35,7 +35,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.jimmy.cleanarchitecture.Bookmark
+import com.jimmy.cleanarchitecture.domain.Bookmark
 import com.jimmy.cleanarchitecture.R
 import kotlinx.android.synthetic.main.item_bookmark.view.*
 

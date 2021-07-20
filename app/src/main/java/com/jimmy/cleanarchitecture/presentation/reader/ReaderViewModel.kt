@@ -39,8 +39,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.jimmy.cleanarchitecture.Bookmark
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Bookmark
+import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.framework.Interactors
 import com.jimmy.cleanarchitecture.framework.MajesticViewModel
 import java.io.IOException

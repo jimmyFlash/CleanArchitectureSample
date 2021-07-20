@@ -7,7 +7,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.R
 import com.jimmy.cleanarchitecture.databinding.ActivityMainBinding
 import com.jimmy.cleanarchitecture.presentation.library.LibraryFragment

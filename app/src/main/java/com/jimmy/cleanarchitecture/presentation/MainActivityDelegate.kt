@@ -30,7 +30,7 @@
 
 package com.jimmy.cleanarchitecture.presentation
 
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Document
 
 interface MainActivityDelegate {
 

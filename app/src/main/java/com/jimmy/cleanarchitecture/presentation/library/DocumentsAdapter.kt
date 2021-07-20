@@ -38,7 +38,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.R
 import com.jimmy.cleanarchitecture.presentation.StringUtil
 import kotlinx.android.synthetic.main.item_document.view.*

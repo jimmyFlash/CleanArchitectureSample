@@ -28,17 +28,6 @@
  * THE SOFTWARE.
  */
 
-package com.jimmy.cleanarchitecture
+package com.jimmy.cleanarchitecture.domain
 
-import java.io.Serializable
-
-data class Document(
-    val url: String,
-    val name: String,
-    val size: Int,
-    val thumbnail: String
-): Serializable {
-  companion object {
-    val EMPTY = Document("", "", 0, "")
-  }
-}
+data class Bookmark (val id: Int = 0, val page: Int)

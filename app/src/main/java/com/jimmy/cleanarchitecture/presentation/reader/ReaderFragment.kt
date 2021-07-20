@@ -22,7 +22,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
-import com.jimmy.cleanarchitecture.Document
+import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.R
 import com.jimmy.cleanarchitecture.databinding.FragmentReaderBinding
 import com.jimmy.cleanarchitecture.framework.MajesticViewModelFactory
