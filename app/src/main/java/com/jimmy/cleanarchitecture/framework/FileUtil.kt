@@ -44,11 +44,17 @@ object FileUtil {
 
   data class DocumentDetail(val name: String, val size: Int, val thumbnail: String)
 
+    /**
+     * helper method to create a thumbnail from pdf document uri string
+     * @param context
+     * @param documentUri document uri string representation
+     * @param documentName pdf doc name
+     * @return the string rep. of the thumbnail of pdf absolute path in the application cache folder
+     */
   private fun getPdfThumbnailUri(context: Context, documentUri: String, documentName: String):
       String {
     val pdfRenderer = PdfRenderer(
-        context.contentResolver.openFileDescriptor(Uri.parse(documentUri),
-            "r")!!
+        context.contentResolver.openFileDescriptor(Uri.parse(documentUri),"r")!!
     )
 
     val firstPage = pdfRenderer.openPage(0)
@@ -76,11 +82,19 @@ object FileUtil {
     return thumbnailFile.absolutePath
   }
 
+    /**
+     * load pdf document from media store
+     * or empty document if no pdf documents are present
+     * @param context
+     * @param documentUri the string representation of pdf uri
+     * @return a DocumentDetail object representing a pdf document loaded from MediaStore
+     *
+     */
   fun getDocumentDetails(context: Context, documentUri: String): DocumentDetail {
     val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.SIZE)
 
-    context.contentResolver.query(Uri.parse(documentUri), projection, null, null, null)?.use {
-      metaCursor ->
+    context.contentResolver.query(Uri.parse(documentUri), projection, null, null,
+        null)?.use { metaCursor ->
       val nameIndex = metaCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
       val sizeIndex = metaCursor.getColumnIndex(OpenableColumns.SIZE)
 
