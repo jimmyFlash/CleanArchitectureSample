@@ -33,25 +33,45 @@ package com.jimmy.cleanarchitecture.presentation.library
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.jimmy.cleanarchitecture.domain.Document
 import com.jimmy.cleanarchitecture.framework.Interactors
 import com.jimmy.cleanarchitecture.framework.MajesticViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LibraryViewModel(application: Application, interactors: Interactors)
   : MajesticViewModel(application, interactors) {
 
   val documents: MutableLiveData<List<Document>> = MutableLiveData()
 
+  /**
+   *  fetches the list of documents from the library using the GetDocuments interactor,
+   *  from within a coroutine, which you start by calling launch().
+   *  Once done, you post the result to the documents LiveData.
+   */
   fun loadDocuments() {
-    // TODO start loading documents
+    viewModelScope.launch {
+      documents.postValue(interactors.getDocuments())
+    }
   }
 
+  /**
+   *  use withContext(), to move the database insert to an IO-optimized thread,
+   *  and suspending until insertion completes. In the end, you load the documents again,
+   *  to update the list
+   */
   fun addDocument(uri: Uri) {
-    // TODO add a new document
-    loadDocuments()
+    viewModelScope.launch {
+      withContext(Dispatchers.IO) {
+        interactors.addDocument(Document(uri.toString(), "", 0, ""))
+      }
+      loadDocuments()
+    }
   }
 
   fun setOpenDocument(document: Document) {
-    // TODO set currently open document
+    interactors.setOpenDocument(document)
   }
 }

@@ -59,7 +59,8 @@ class MajesticReaderApplication : Application() {
               GetDocuments(documentRepository),
               RemoveDocument(documentRepository),
               GetOpenDocument(documentRepository),
-              SetOpenDocument(documentRepository))
+              SetOpenDocument(documentRepository)
+          )
       )
   }
 }
