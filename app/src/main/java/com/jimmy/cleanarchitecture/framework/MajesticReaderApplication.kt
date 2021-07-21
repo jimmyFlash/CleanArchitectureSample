@@ -31,18 +31,35 @@
 package com.jimmy.cleanarchitecture.framework
 
 import android.app.Application
+import com.jimmy.cleanarchitecture.data.BookmarkRepository
+import com.jimmy.cleanarchitecture.data.DocumentRepository
+import com.jimmy.cleanarchitecture.interactors.*
 
 class MajesticReaderApplication : Application() {
 
 /**
- * on start the application uses the viewmodel factory to inject dependencies/interactors
+ *  injects all the dependencies into MajesticViewModelFactory.
+ *  It creates ViewModels in the app and passes interactor dependencies to them.
  */
   override fun onCreate() {
     super.onCreate()
 
+    val bookmarkRepository = BookmarkRepository(RoomBookmarkDataSource(this))
+    val documentRepository = DocumentRepository(
+        RoomDocumentDataSource(this),
+        InMemoryOpenDocumentDataSource()
+    )
+
       MajesticViewModelFactory.inject(
           this,
-          Interactors()
+          Interactors( AddBookmark(bookmarkRepository),
+              GetBookmarks(bookmarkRepository),
+              RemoveBookmark(bookmarkRepository),
+              AddDocument(documentRepository),
+              GetDocuments(documentRepository),
+              RemoveDocument(documentRepository),
+              GetOpenDocument(documentRepository),
+              SetOpenDocument(documentRepository))
       )
   }
 }
