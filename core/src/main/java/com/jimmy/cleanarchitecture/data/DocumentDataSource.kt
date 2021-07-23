@@ -4,7 +4,8 @@ import com.jimmy.cleanarchitecture.domain.Document
 
 /**
  * This data source will take care of adding, querying and removing
- * document from the database
+ * document from the database, concrete implementation found
+ * in framework layer
  */
 interface DocumentDataSource {
 
