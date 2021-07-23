@@ -49,9 +49,12 @@ object MajesticViewModelFactory : ViewModelProvider.Factory {
      * all viewmodels extend the MajesticViewModel class which extends androidViewModel
      */
   override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    // Determines if the class or interface represented by this Class object
+    // is either the same as, or is a superclass or superinterface of,
+    // the class or interface represented by the specified Class parameter
     if(MajesticViewModel::class.java.isAssignableFrom(modelClass)) {
       return modelClass.getConstructor(Application::class.java, Interactors::class.java)
-          .newInstance(
+          .newInstance(/*Uses the constructor represented by this Constructor object to create and initialize a new instance of the constructor's declaring class, with the specified initialization parameters.*/
               application,
               dependencies
           )

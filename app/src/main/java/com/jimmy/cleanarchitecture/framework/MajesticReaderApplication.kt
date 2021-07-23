@@ -44,23 +44,26 @@ class MajesticReaderApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
+    // initialize both BookmarkRepository, DocumentRepository here to inject them into
+    // viewmodel factory arguments
     val bookmarkRepository = BookmarkRepository(RoomBookmarkDataSource(this))
     val documentRepository = DocumentRepository(
         RoomDocumentDataSource(this),
         InMemoryOpenDocumentDataSource()
     )
 
-      MajesticViewModelFactory.inject(
-          this,
-          Interactors( AddBookmark(bookmarkRepository),
-              GetBookmarks(bookmarkRepository),
-              RemoveBookmark(bookmarkRepository),
-              AddDocument(documentRepository),
-              GetDocuments(documentRepository),
-              RemoveDocument(documentRepository),
-              GetOpenDocument(documentRepository),
-              SetOpenDocument(documentRepository)
-          )
+    MajesticViewModelFactory.inject(
+      this,
+      Interactors(
+          AddBookmark(bookmarkRepository),
+          GetBookmarks(bookmarkRepository),
+          RemoveBookmark(bookmarkRepository),
+          AddDocument(documentRepository),
+          GetDocuments(documentRepository),
+          RemoveDocument(documentRepository),
+          GetOpenDocument(documentRepository),
+          SetOpenDocument(documentRepository)
       )
+    )
   }
 }

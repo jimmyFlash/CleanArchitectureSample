@@ -34,7 +34,7 @@ class ReaderFragment : Fragment(), LifecycleObserver {
   companion object {
 
     fun newInstance(document: Document) = ReaderFragment().apply {
-      arguments = ReaderViewModel.createArguments(document)
+      arguments = ReaderViewModel.createArguments(document) // create a bundle argument for instance
     }
   }
 
@@ -50,10 +50,12 @@ class ReaderFragment : Fragment(), LifecycleObserver {
 
     fragmentReaderBinding = FragmentReaderBinding.inflate(inflater, container, false)
 
+    // inject viewmodel from factory
     viewModel = ViewModelProvider(this, MajesticViewModelFactory)
       .get(ReaderViewModel::class.java)
 
     if(savedInstanceState == null) {
+      // load pdf and display last bookmarked page from argument otherwise open last opened doc.
       viewModel.loadArguments(arguments)
     } else {
       // Recreating fragment after configuration change, reopen current page so it can be rendered again.
@@ -115,6 +117,7 @@ class ReaderFragment : Fragment(), LifecycleObserver {
       tabLibrary.setCompoundDrawablesRelativeWithIntrinsicBounds(0, libraryDrawable, 0, 0)
     })
 
+    // open last bookmarked page or the 1st page if no bookmarks found
     viewModel.currentPage.observe(viewLifecycleOwner, { showPage(it) })
     viewModel.hasNextPage.observe(viewLifecycleOwner, { tabNextPage.isEnabled = it })
     viewModel.hasPreviousPage.observe(viewLifecycleOwner, { tabPreviousPage.isEnabled = it })
@@ -135,16 +138,21 @@ class ReaderFragment : Fragment(), LifecycleObserver {
     lifecycle.removeObserver(this)
   }
 
+  /**
+   * display pdf page in renderer and allow navigation controls
+   */
   private fun showPage(page: PdfRenderer.Page) {
     iv_page.visibility = View.VISIBLE
     pagesTextView.visibility = View.VISIBLE
     tabPreviousPage.visibility = View.VISIBLE
     tabNextPage.visibility = View.VISIBLE
 
+    // remove and free memory of any loaded pdf page
     if (iv_page.drawable != null) {
       (iv_page.drawable as BitmapDrawable).bitmap.recycle()
     }
 
+    // get display screen size and store in to Point object
     val size = Point()
     @Suppress("DEPRECATION")
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
@@ -153,6 +161,7 @@ class ReaderFragment : Fragment(), LifecycleObserver {
       activity?.windowManager?.defaultDisplay?.getSize(size)
     }
 
+    // calculate the fit screen size for rendered page
     val pageWidth = size.x
     val pageHeight = page.height * pageWidth / page.width
 
@@ -161,15 +170,18 @@ class ReaderFragment : Fragment(), LifecycleObserver {
         pageHeight,
         Bitmap.Config.ARGB_8888)
 
+    // render page
     page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
     iv_page.setImageBitmap(bitmap)
 
+    // display the page number / page count in bottom navigation
     pagesTextView.text = getString(
         R.string.page_navigation_format,
         page.index + 1,
         viewModel.renderer.value?.pageCount
     )
 
+    // close renderer
     page.close()
   }
 

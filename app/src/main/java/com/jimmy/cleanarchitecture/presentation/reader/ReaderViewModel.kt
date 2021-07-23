@@ -61,11 +61,13 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
   companion object {
     private const val DOCUMENT_ARG = "document"
 
+    // returns a bundle of pair referencing document
     fun createArguments(document: Document) = bundleOf(
         DOCUMENT_ARG to document
     )
   }
 
+  // open document to be observed
   val document = MutableLiveData<Document>()
 
   /*
@@ -131,8 +133,10 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
 
   private fun getFileDescriptor(uri: Uri) = application.contentResolver.openFileDescriptor(uri, "r")
 
-  // This will use GetDocuments to get a list of all documents in the library
-  // and check if it contains one that matches the currently open document
+  /**
+   * This will use GetDocuments to get a list of all documents in the library
+   * and check if it contains one that matches the currently open document
+   */
   private fun isCurrentPageBookmarked() =
       bookmarks.value?.any { it.page == currentPage.value?.index } == true
 
@@ -140,19 +144,25 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
   private suspend fun isInLibrary(document: Document) =
     interactors.getDocuments().any { it.url == document.url }
 
+  /**
+   *
+   */
   fun loadArguments(arguments: Bundle?) {
     if (arguments == null) {
       return
     }
 
-    // Initializes currentPage to be set to the first page or first bookmarked page if it exists.
+    // Initializes currentPage to be set to the first page or last bookmarked page if it exists.
     currentPage.apply {
-      addSource(renderer) { renderer ->
+      addSource(renderer) { renderer -> // listen value changes in renderer
         viewModelScope.launch {
           val document = document.value
 
           if (document != null) {
+            // get the list of bookmarks for the document
+            // get the last bookmark and extract the page number or 0 if not found
             val bookmarks = interactors.getBookmarks(document).lastOrNull()?.page ?: 0
+            // post the value of renderer page with bookmark
             postValue(renderer.openPage(bookmarks))
           }
         }
@@ -161,15 +171,16 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
     // Gets Document passed to ReaderFragment.
     val documentFromArguments = arguments.get(DOCUMENT_ARG) as Document? ?: Document.EMPTY
 
-    // Gets the last document that was opened from GetOpenDocument.
+    // Gets the last document that was opened from GetOpenDocument. or returns Document.Empty
     val lastOpenDocument = interactors.getOpenDocument()
 
     // Sets the value of document to the one passed to ReaderFragment or
     // falls back to lastOpenDocument if nothing was passed
     document.value = when {
-      documentFromArguments != Document.EMPTY -> documentFromArguments
-      documentFromArguments == Document.EMPTY && lastOpenDocument != Document.EMPTY -> lastOpenDocument
-      else -> Document.EMPTY
+      documentFromArguments != Document.EMPTY -> documentFromArguments // document passed from argument
+      documentFromArguments == Document.EMPTY && lastOpenDocument != Document.EMPTY ->
+        lastOpenDocument // get the last open document
+      else -> Document.EMPTY // otherwise return empty document
     }
 
     // Sets the new open document by calling SetOpenDocument
@@ -179,7 +190,6 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
   /**
    * This creates a new Document that represents the document
    * that was just open and passes it to SetOpenDocument.
-   *
    */
   fun openDocument(uri: Uri) {
     document.value = Document(uri.toString(), "", 0, "")
@@ -190,6 +200,10 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
     openPage(bookmark.page)
   }
 
+  /**
+   * open a page in renderer
+   * update the value of currentPage
+   */
   private fun openPage(page: Int) = renderer.value?.let {
     currentPage.value = it.openPage(page)
   }
@@ -203,7 +217,6 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
   /**
    * either delete or add a bookmark, depending on if it’s already in your database,
    * and then you update the bookmarks, to refresh the UI.
-   *
    */
   fun toggleBookmark() {
     val currentPage = currentPage.value?.index ?: return
@@ -221,6 +234,9 @@ class ReaderViewModel(application: Application, interactors: Interactors) : Maje
     }
   }
 
+  /**
+   * removes or adds a document to db
+   */
   fun toggleInLibrary() {
     val document = document.value ?: return
 

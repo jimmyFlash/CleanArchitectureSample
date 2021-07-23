@@ -45,7 +45,7 @@ class LibraryFragment : Fragment(), LifecycleObserver {
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
-
+    // check parent activity is MainActivityDelegate type
     try {
       mainActivityDelegate = context as MainActivityDelegate
     } catch (e: ClassCastException) {
@@ -58,19 +58,20 @@ class LibraryFragment : Fragment(), LifecycleObserver {
    fun onCreated() {
     Log.d(LibraryFragment::class.java.simpleName, "reached state created")
      val adapter = DocumentsAdapter(glide = Glide.with(this)) {
-       mainActivityDelegate.openDocument(it)
+       mainActivityDelegate.openDocument(it) // lambda call main activity method to load reader fragment
      }
      documentsRecyclerView.adapter = adapter
 
+       // inject viewmodel from factory
      viewModel = ViewModelProvider(this, MajesticViewModelFactory)
        .get(LibraryViewModel::class.java)
      viewModel.documents.observe(viewLifecycleOwner, { adapter.update(it) })
-     viewModel.loadDocuments()
+     viewModel.loadDocuments() // load all documents stored in db
 
-       openPdfContract.createIntent(requireContext(), null )
+     openPdfContract.createIntent(requireContext(), null )
 
      fab.setOnClickListener {
-       openPdfLauncher.launch(null)
+       openPdfLauncher.launch(null) // launch system picker for loading pdf from device storage
      }
   }
 

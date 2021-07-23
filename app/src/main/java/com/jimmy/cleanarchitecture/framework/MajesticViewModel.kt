@@ -35,6 +35,9 @@ import androidx.lifecycle.AndroidViewModel
 import com.jimmy.cleanarchitecture.framework.Interactors
 import com.jimmy.cleanarchitecture.framework.MajesticReaderApplication
 
+/**
+ * base viewmodel which all other viewmodels will inherit from
+ */
 open class MajesticViewModel(application: Application, protected val interactors: Interactors) :
     AndroidViewModel(application) {
 
